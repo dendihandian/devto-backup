@@ -11,18 +11,20 @@ params = {
 result = requests.get('https://dev.to/api/articles', params=params)
 articles = result.json()
 
-# process each article
+
+# make directories for posts if not exists
 username = params['username']
 posts_path = os.path.join(sys.path[0], 'dev.to', username, 'posts')
-
 if not os.path.exists(posts_path):
     os.makedirs(posts_path)
 
+# process each article
 for article in articles:
-    # print(article['title'])
     slug = article['slug']
+    article_id = article['id']
     filename = f'{slug}.md'
-    # open(f'dev.to/{username}/posts/{filename}', "w+").close()
-    open(os.path.join(posts_path, filename), "w+").close()
-
-# print(os.path.join(sys.path[0], "my_file.txt"))
+    article_result = requests.get(f'https://dev.to/api/articles/{article_id}')
+    article = article_result.json()
+    f = open(os.path.join(posts_path, filename), "w+", encoding="utf-8")
+    f.write(article['body_markdown'])
+    f.close()
