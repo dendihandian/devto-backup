@@ -23,8 +23,10 @@ for article in articles:
     slug = article['slug']
     article_id = article['id']
     filename = f'{slug}.md'
+    
     article_result = requests.get(f'https://dev.to/api/articles/{article_id}')
     article = article_result.json()
+    
     f = open(os.path.join(posts_path, filename), "w+", encoding="utf-8")
     f.write(article['body_markdown'])
     f.close()
